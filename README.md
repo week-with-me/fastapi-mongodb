@@ -1,0 +1,1 @@
+# :rocket: FastAPI with MongoDB 
