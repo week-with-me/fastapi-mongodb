@@ -10,7 +10,8 @@ python = "^3.9"
 fastapi = "^0.70.1"
 uvicorn = "^0.16.0"
 python-dotenv = "^0.19.2"
-odmantic = "^0.3.5"
+motor = "^2.5.1"
+dnspython = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 
