@@ -3,7 +3,6 @@ from bson.objectid import ObjectId
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from pydantic.utils import Obj
 
 CreateSchema = TypeVar('CreateSchema', bound=BaseModel)
 UpdateSchema =  TypeVar('UpdateSchema', bound=BaseModel)
@@ -13,10 +12,7 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
     def __init__(self, collection) -> None:
         self.collection = collection
         
-    async def get_by_id(self, id: str, request: Request) -> Optional[dict]:
-        if not ObjectId.is_valid(id):
-            return None
-        
+    async def get_by_id(self, id: str, request: Request) -> Optional[dict]:          
         document = await request.app.db[self.collection].find_one({'_id': id})
         document['_id'] = str(document['_id'])
         
@@ -67,9 +63,6 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
         request: Request,
         update_data: UpdateSchema
     ) -> bool:
-        if not ObjectId.is_valid(id):
-            return None
-        
         update_data = update_data.dict(exclude_none=True)
 
         updated_document = await request.app.db[
@@ -79,7 +72,7 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
             {'$set': jsonable_encoder(update_data)},
             upsert = False
         )
-        
+    
         return updated_document
         
     async def delete(self, id: str, request: Request) -> bool:
@@ -93,5 +86,3 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
         )
         
         return deleted_document
-        
-        
