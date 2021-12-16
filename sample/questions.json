@@ -1,0 +1,50 @@
+[
+    {
+        "question_order": 1,
+        "question": "처음에 둘은 어떻게 친해졌나요?",
+        "answers": [
+            {
+                "id": 1,
+                "content": "name이(가) 먼저 제게 말을 걸어줬어요.",
+                "personality": "E"
+            },
+            {
+                "id": 2,
+                "content": "제가 name에게 먼저 말을 걸었어요.",
+                "personality": "I"
+            }
+        ]
+    },
+    {
+        "question_order": 2,
+        "question": "name의 어떤 부분이 좋았어요?",
+        "answers": [
+            {
+                "id": 1,
+                "content": "다른 사람들 앞에서 자신감 있는 모습이 좋았어요.",
+                "personality": "E"
+            },
+            {
+                "id": 2,
+                "content": "한 명, 한 명 배려해주는 세심함이 좋았어요.",
+                "personality": "I"
+            }
+        ]
+    },
+    {
+        "question_order": 3,
+        "question": "name과(와) 내일 만나기로 했어요. name은(는) 내게",
+        "answers": [
+            {
+                "id": 1,
+                "content": "내일 만나서 결정할까?",
+                "personality": "P"
+            },
+            {
+                "id": 2,
+                "content": "내일 몇시에 어디서 볼까?",
+                "personality": "J"
+            }
+        ]
+    }
+]
