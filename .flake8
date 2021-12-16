@@ -1,0 +1,4 @@
+[flake8]
+exclude=.git, .gitignore, README.md, poetry.lock, pyproject.toml, .flake8, .env
+max-line-length=79
+pre-file-ignores=*/__init__.py:F401
