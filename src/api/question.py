@@ -59,7 +59,7 @@ async def get_multi_questions(
     limit: int = Query(default=0, description="페이지네이션의 종료 값", example=5),
     sort: Optional[List[str]] = Query(
         default=["question_order asc"],
-        description="정렬을 위한 쿼리 파라미터",
+        description="정렬을 위한 쿼리 파라미터. + 를 기준으로 앞에는 정렬하는 필드를 입력하고 뒤에는 오름차순(asc)인지 내림차순(desc)인지 입력",  # noqa: E501
         example="question-order+asc",
     ),
 ):

@@ -1,6 +1,6 @@
 from typing import Generic, List, Optional, TypeVar
 
-from bson.objectid import ObjectId
+from bson.objectid import InvalidId, ObjectId
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
@@ -15,10 +15,16 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
         self.collection = collection
 
     async def get_by_id(self, id: str, request: Request) -> Optional[dict]:
-        document = await request.app.db[self.collection].find_one({"_id": id})
-        document["_id"] = str(document["_id"])
+        try:
+            document = await request.app.db[self.collection].find_one(
+                {"_id": ObjectId(id)}
+            )
+            document["_id"] = str(document["_id"])
 
-        return document
+            return document
+
+        except InvalidId:
+            raise TypeError
 
     async def get_multi(
         self,
@@ -32,23 +38,11 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
         if sort:
             sort_field = []
 
-            if type(sort) is list:
-                for query_string in sort:
-                    field, order = query_string.split(" ")
+            if not type(sort) is list:
+                sort = list(sort)
 
-                    field = field.replace("-", "_")
-
-                    if order == "asc":
-                        order = ASCENDING
-                    elif order == "desc":
-                        order = DESCENDING
-                    else:
-                        raise ValueError
-
-                    sort_field.append((field, order))
-
-            else:
-                field, order = sort.split(" ")
+            for query_string in sort:
+                field, order = query_string.split(" ")
 
                 field = field.replace("-", "_")
 
@@ -83,24 +77,29 @@ class CRUDBase(Generic[CreateSchema, UpdateSchema]):
     async def update(
         self, id: str, request: Request, update_data: UpdateSchema
     ) -> bool:
-        update_data = update_data.dict(exclude_none=True)
+        try:
+            update_data = update_data.dict(exclude_none=True)
 
-        updated_document = await request.app.db[
-            self.collection
-        ].find_one_and_update(
-            {"_id": ObjectId(id)},
-            {"$set": jsonable_encoder(update_data)},
-            upsert=False,
-        )
+            updated_document = await request.app.db[
+                self.collection
+            ].find_one_and_update(
+                {"_id": ObjectId(id)},
+                {"$set": jsonable_encoder(update_data)},
+                upsert=False,
+            )
 
-        return updated_document
+            return updated_document
+
+        except InvalidId:
+            raise TypeError
 
     async def delete(self, id: str, request: Request) -> bool:
-        if not ObjectId.is_valid(id):
-            return None
+        try:
+            deleted_document = await request.app.db[
+                self.collection
+            ].find_one_and_delete({"_id": ObjectId(id)})
 
-        deleted_document = await request.app.db[
-            self.collection
-        ].find_one_and_delete({"_id": ObjectId(id)})
+            return deleted_document
 
-        return deleted_document
+        except InvalidId:
+            raise TypeError
