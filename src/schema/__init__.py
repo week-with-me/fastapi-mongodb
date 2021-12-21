@@ -1,3 +1,4 @@
+from src.schema.anniversary import CreateAnniversary, UpdateAnniversary
 from src.schema.question import (
     CreateQuestion,
     UpdateQuestion,
